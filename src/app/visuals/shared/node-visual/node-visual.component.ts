@@ -12,14 +12,7 @@ import { GraphComponent } from '../../graph/graph.component';
           cx="0"
           cy="0">
       </svg:circle>
-      <svg:circle
-          class="inner_circle"
-          x="NaN"
-          y="NaN"
-          r="4"
-          style="stroke:rgba(0,0,0,0);"
-          [attr.fill]="node.color">
-      </svg:circle>
+      <text text-anchor="'middle'" fill="'white'" font-size="'500px'" font-family="'Arial'" dy=".3em">h{{node.id}}</text>
     </svg:g>
   `,
   styleUrls: ['./node-visual.component.css']

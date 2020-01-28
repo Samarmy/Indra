@@ -15,11 +15,14 @@ export class GraphComponent implements OnInit, DoCheck {
   @Input('graph') graph: ForceDirectedGraph;
   graphInitialized: boolean = false;
   stack: number[] = [] as number[];
+
   private _options: { width, height } = { width: 800, height: 600 };
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.graph.initSimulation(this.options);
+    if(this.graph){
+      this.graph.initSimulation(this.options);
+    }
   }
 
   constructor(private d3Service: D3Service, private ref: ChangeDetectorRef, private sparkService: SparkService) {
@@ -48,6 +51,20 @@ export class GraphComponent implements OnInit, DoCheck {
     this.postSpark(this.stack.toString());
   }
 
+  traverseButton(){
+    if(this.traversalType == "−"){
+      this.graph.filterHorizontal((this.vertexConditionOne ? this.vertexConditionOne.split(",").map(Number) : ([] as Number[])),
+      (this.edgeCondition ? this.edgeCondition.split(",").map(Number) : ([] as Number[])),
+      (this.vertexConditionTwo ? this.vertexConditionTwo.split(",").map(Number) : ([] as Number[])))
+      // this.graph.filterHorizontal((this.vertexConditionOne ? this.vertexConditionOne.split(",").map(Number) : ([] as Number[])), (this.edgeCondition ? this.edgeCondition.split(",").map(Number) : ([] as Number[])), (this.vertexConditionTwo ? this.vertexConditionTwo.split(",").map(Number) : ([] as Number[])));
+    } else if (this.traversalType == "~"){
+
+    } else if (this.traversalType == "≂"){
+
+    }
+
+  }
+
   viewSuperNode(event, id){
     this.stack.push(id)
     this.graph.refreshGraph()
@@ -71,4 +88,11 @@ export class GraphComponent implements OnInit, DoCheck {
       height: window.innerHeight
     };
   }
+
+  // Query Traversal Code Below
+
+  traversalType: string;
+  vertexConditionOne: string;
+  vertexConditionTwo: string;
+  edgeCondition: string;
 }

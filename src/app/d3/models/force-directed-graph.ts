@@ -17,10 +17,16 @@ export class ForceDirectedGraph {
 
     public nodes: Node[] = [];
     public links: Link[] = [];
+    public tmpNodes: Node[] = [];
+    public tmpLinks: Link[] = [];
+    public origNodes: Node[] = [];
+    public origLinks: Link[] = [];
 
     constructor(nodes, links, options: { width, height }) {
         this.nodes = nodes;
         this.links = links;
+        this.origNodes = nodes;
+        this.origLinks = links;
 
         this.initSimulation(options);
     }
@@ -79,5 +85,83 @@ export class ForceDirectedGraph {
     refreshGraph(){
       this.nodes.length = 0;
       this.links.length = 0;
+    }
+
+    filterHorizontal(vertexOneFilterList, edgeFilterList, vertexTwoFilterList) {
+
+
+      this.origNodes.forEach(function (node) {
+        if(vertexOneFilterList.length == 0){
+          this.tmpNodes.push(node);
+        }else if (vertexOneFilterList.includes(node.id)) {
+    			this.tmpNodes.push(node);
+    		}
+      }.bind(this));
+
+      this.origLinks.forEach(function (link) {
+        if(edgeFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)) {
+          // new graph contains verticess from vertexOneFilterList already, edgeFilterList is empty
+          this.tmpLinks.push(link);
+        } else if (vertexTwoFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)){
+          // new graph contains verticess from vertexOneFilterList already
+          // add property check for edges below
+          if(true){
+            this.tmpLinks.push(link);
+          }
+        } else if (edgeFilterList.length == 0 && vertexTwoFilterList.length == 0 && (vertexOneFilterList.includes(link.source.id) || vertexOneFilterList.includes(link.target.id))){
+          // new graph contains one vertex from vertexOneFilterList already, edgeFilterList is empty, vertexTwoFilterList is empty
+          if(!this.tmpNodes.includes(link.target)){
+            this.tmpNodes.push(link.target);
+          } else if (!this.tmpNodes.includes(link.source)){
+            this.tmpNodes.push(link.source);
+          }
+          this.tmpLinks.push(link);
+        } else if (vertexTwoFilterList.length == 0 && (vertexOneFilterList.includes(link.source.id) || vertexOneFilterList.includes(link.target.id))){
+          // new graph contains one vertex from vertexOneFilterList already, vertexTwoFilterList is empty
+          // add property check for edges below
+          if(true){
+            if(!this.tmpNodes.includes(link.target)){
+              this.tmpNodes.push(link.target);
+            } else if (!this.tmpNodes.includes(link.source)){
+              this.tmpNodes.push(link.source);
+            }
+            this.tmpLinks.push(link);
+          }
+        } else if (edgeFilterList.length == 0 &&  vertexOneFilterList.includes(link.target.id) && vertexTwoFilterList.includes(link.source.id)){
+            // new graph contains target vertex from vertexOneFilterList already, edgeFilterList is empty
+          if (!this.tmpNodes.includes(link.source)){
+            this.tmpNodes.push(link.source);
+          }
+          this.tmpLinks.push(link);
+        } else if (edgeFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexTwoFilterList.includes(link.target.id)){
+          // new graph contains source vertex from vertexOneFilterList already, edgeFilterList is empty
+          if (!this.tmpNodes.includes(link.target)){
+            this.tmpNodes.push(link.target);
+          }
+          this.tmpLinks.push(link);
+        } else if (vertexOneFilterList.includes(link.source.id) && vertexTwoFilterList.includes(link.target.id)){
+          // new graph contains source vertex from vertexOneFilterList already
+            // add property check for edges below
+          if(true){
+            if (!this.tmpNodes.includes(link.target)){
+              this.tmpNodes.push(link.target);
+            }
+            this.tmpLinks.push(link);
+          }
+
+        } else if (vertexOneFilterList.includes(link.target.id) && vertexTwoFilterList.includes(link.source.id)){
+            // new graph contains target vertex from vertexOneFilterList already
+              // add property check for edges below
+            if(true){
+              if (!this.tmpNodes.includes(link.source)){
+                this.tmpNodes.push(link.source);
+              }
+              this.tmpLinks.push(link);
+            }
+        }
+      }.bind(this));
+
+      this.nodes = this.tmpNodes;
+      this.links = this.tmpLinks;
     }
 }
