@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, DoCheck } from '@angular/core';
+import { Component, Input, Output, ChangeDetectorRef, HostListener, ChangeDetectionStrategy, OnInit, DoCheck } from '@angular/core';
 import { D3Service, ForceDirectedGraph, Node, Link } from '../../d3';
 
 import { SparkService } from './spark.service';
@@ -15,6 +15,8 @@ export class GraphComponent implements OnInit, DoCheck {
   @Input('graph') graph: ForceDirectedGraph;
   graphInitialized: boolean = false;
   stack: number[] = [] as number[];
+  origGraph: boolean = true;
+  showNodeIDs: boolean = false;
 
   private _options: { width, height } = { width: 800, height: 600 };
 
@@ -42,21 +44,27 @@ export class GraphComponent implements OnInit, DoCheck {
   refreshButton(){
     this.stack = [];
     this.graph.refreshGraph()
+    this.origGraph = true;
     this.postSpark("");
   }
 
   popButton(){
     this.stack.pop();
-    this.graph.refreshGraph()
+    this.graph.refreshGraph();
+    this.origGraph = true;
     this.postSpark(this.stack.toString());
+  }
+
+  showIDsButton(){
+    this.showNodeIDs = !this.showNodeIDs;
   }
 
   traverseButton(){
     if(this.traversalType == "−"){
       this.graph.filterHorizontal((this.vertexConditionOne ? this.vertexConditionOne.split(",").map(Number) : ([] as Number[])),
       (this.edgeCondition ? this.edgeCondition.split(",").map(Number) : ([] as Number[])),
-      (this.vertexConditionTwo ? this.vertexConditionTwo.split(",").map(Number) : ([] as Number[])))
-      // this.graph.filterHorizontal((this.vertexConditionOne ? this.vertexConditionOne.split(",").map(Number) : ([] as Number[])), (this.edgeCondition ? this.edgeCondition.split(",").map(Number) : ([] as Number[])), (this.vertexConditionTwo ? this.vertexConditionTwo.split(",").map(Number) : ([] as Number[])));
+      (this.vertexConditionTwo ? this.vertexConditionTwo.split(",").map(Number) : ([] as Number[])), this.origGraph)
+      this.origGraph = false
     } else if (this.traversalType == "~"){
 
     } else if (this.traversalType == "≂"){

@@ -15,6 +15,7 @@
   <mat-toolbar-row>
     <button mat-raised-button style="margin:5px;" (click)="popButton()"> Up One Level</button>
     <button mat-raised-button style="margin:5px;" (click)="refreshButton()">Return to Top</button>
+    <button mat-raised-button style="margin:5px;" (click)="showIDsButton()">Show Node IDs</button>
     </mat-toolbar-row>
     <mat-toolbar-row>
       <mat-form-field>
@@ -70,7 +71,7 @@
 <h2>Current Super Node: {{stack[0]}}<ng-container *ngIf="stack.length == 0">None</ng-container></h2>
 <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
   <g [zoomableOf]="svg">
-    <ng-container *ngIf="graph && graph.nodes.length==0">
+    <!-- <ng-container *ngIf="!graph || graph.nodes.length==0">
       <g [attr.transform]="'translate(' + ((_options.width/2)-75) + ',' + ((_options.height/2)-75) + ') scale(3)'" >
         <path fill="#000" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
           <animateTransform attributeType="xml"
@@ -83,11 +84,11 @@
           />
         </path>
       </g>
-    </ng-container>
+    </ng-container> -->
     <ng-container *ngIf="graph">
       <g [linkVisual]="link" *ngFor="let link of graph.links"></g>
       <g [nodeVisual]="node" *ngFor="let node of graph.nodes"
-          [draggableNode]="node" [draggableInGraph]="graph" (viewSuperNodeEvent)="viewSuperNode($event, node.id)"></g>
+          [draggableNode]="node" [draggableInGraph]="graph" [showNodeIDs]="showNodeIDs"></g>
     </ng-container>
   </g>
 </svg>

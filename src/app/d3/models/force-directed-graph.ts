@@ -87,25 +87,33 @@ export class ForceDirectedGraph {
       this.links.length = 0;
     }
 
-    filterHorizontal(vertexOneFilterList, edgeFilterList, vertexTwoFilterList) {
+    filterHorizontal(vertexOneFilterList, edgeFilterList, vertexTwoFilterList, origGraph) {
 
+      if(!origGraph){
+        vertexOneFilterList = vertexOneFilterList.concat(this.nodes.map(({id}) => id))
+      }
+
+      this.tmpNodes.length = 0;
+      this.tmpLinks.length = 0;
 
       this.origNodes.forEach(function (node) {
         if(vertexOneFilterList.length == 0){
           this.tmpNodes.push(node);
         }else if (vertexOneFilterList.includes(node.id)) {
-    			this.tmpNodes.push(node);
-    		}
+          this.tmpNodes.push(node);
+        }
       }.bind(this));
 
       this.origLinks.forEach(function (link) {
-        if(edgeFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)) {
+        if(edgeFilterList.length == 0 && (vertexOneFilterList.length == 0 || (vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)))){
           // new graph contains verticess from vertexOneFilterList already, edgeFilterList is empty
-          this.tmpLinks.push(link);
-        } else if (vertexTwoFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)){
+          if(!this.tmpLinks.includes(link)){
+            this.tmpLinks.push(link);
+          }
+        } else if (vertexTwoFilterList.length == 0 && (vertexOneFilterList.length == 0 || (vertexOneFilterList.includes(link.source.id) && vertexOneFilterList.includes(link.target.id)))){
           // new graph contains verticess from vertexOneFilterList already
           // add property check for edges below
-          if(true){
+          if(true && !this.tmpLinks.includes(link)){
             this.tmpLinks.push(link);
           }
         } else if (edgeFilterList.length == 0 && vertexTwoFilterList.length == 0 && (vertexOneFilterList.includes(link.source.id) || vertexOneFilterList.includes(link.target.id))){
@@ -115,7 +123,9 @@ export class ForceDirectedGraph {
           } else if (!this.tmpNodes.includes(link.source)){
             this.tmpNodes.push(link.source);
           }
-          this.tmpLinks.push(link);
+          if(!this.tmpLinks.includes(link)){
+            this.tmpLinks.push(link);
+          }
         } else if (vertexTwoFilterList.length == 0 && (vertexOneFilterList.includes(link.source.id) || vertexOneFilterList.includes(link.target.id))){
           // new graph contains one vertex from vertexOneFilterList already, vertexTwoFilterList is empty
           // add property check for edges below
@@ -125,20 +135,26 @@ export class ForceDirectedGraph {
             } else if (!this.tmpNodes.includes(link.source)){
               this.tmpNodes.push(link.source);
             }
-            this.tmpLinks.push(link);
+            if(!this.tmpLinks.includes(link)){
+              this.tmpLinks.push(link);
+            }
           }
         } else if (edgeFilterList.length == 0 &&  vertexOneFilterList.includes(link.target.id) && vertexTwoFilterList.includes(link.source.id)){
             // new graph contains target vertex from vertexOneFilterList already, edgeFilterList is empty
           if (!this.tmpNodes.includes(link.source)){
             this.tmpNodes.push(link.source);
           }
-          this.tmpLinks.push(link);
+          if(!this.tmpLinks.includes(link)){
+            this.tmpLinks.push(link);
+          }
         } else if (edgeFilterList.length == 0 && vertexOneFilterList.includes(link.source.id) && vertexTwoFilterList.includes(link.target.id)){
           // new graph contains source vertex from vertexOneFilterList already, edgeFilterList is empty
           if (!this.tmpNodes.includes(link.target)){
             this.tmpNodes.push(link.target);
           }
-          this.tmpLinks.push(link);
+          if(!this.tmpLinks.includes(link)){
+            this.tmpLinks.push(link);
+          }
         } else if (vertexOneFilterList.includes(link.source.id) && vertexTwoFilterList.includes(link.target.id)){
           // new graph contains source vertex from vertexOneFilterList already
             // add property check for edges below
@@ -146,7 +162,9 @@ export class ForceDirectedGraph {
             if (!this.tmpNodes.includes(link.target)){
               this.tmpNodes.push(link.target);
             }
-            this.tmpLinks.push(link);
+            if(!this.tmpLinks.includes(link)){
+              this.tmpLinks.push(link);
+            }
           }
 
         } else if (vertexOneFilterList.includes(link.target.id) && vertexTwoFilterList.includes(link.source.id)){
@@ -156,7 +174,9 @@ export class ForceDirectedGraph {
               if (!this.tmpNodes.includes(link.source)){
                 this.tmpNodes.push(link.source);
               }
-              this.tmpLinks.push(link);
+              if(!this.tmpLinks.includes(link)){
+                this.tmpLinks.push(link);
+              }
             }
         }
       }.bind(this));
