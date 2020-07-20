@@ -1,5 +1,8 @@
 # Indra
 
+Published in the BDCAT'19 proceedings, where it recieved the best paper award.\
+[Samuel Armstrong, Kevin Bruhwiler, and Sangmi Lee Pallickara. 2019. Rapid, Progressive Sub-Graph Explorations for Interactive Visual Analytics over Large-Scale Graph Datasets. In Proceedings of the 6th IEEE/ACM International Conference on Big Data Computing, Applications and Technologies (BDCAT ’19). Association for Computing Machinery, New York, NY, USA, 1–10.](https://dl.acm.org/doi/abs/10.1145/3365109.3368793)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.22.
 
 ## Development server
